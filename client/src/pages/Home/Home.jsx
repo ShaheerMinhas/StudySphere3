@@ -1,11 +1,11 @@
-import * as React from "react";
+import React, { useState, useEffect } from 'react';
+import { auth } from '../../fire'; // Import the auth object from your Firebase configuration
 import AppBar from "@mui/material/AppBar";
 import Box from "@mui/material/Box";
 import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
 import Button from "@mui/material/Button";
 import MenuIcon from "@mui/icons-material/Menu";
-import { spacing } from "@mui/system";
 import CssBaseline from "@mui/material/CssBaseline";
 import SearchIcon from "@mui/icons-material/Search";
 import { styled, alpha } from "@mui/material/styles";
@@ -22,6 +22,29 @@ import Stack from "@mui/material/Stack";
 import { useTheme } from "@mui/material/styles";
 import useMediaQuery from "@mui/material/useMediaQuery";
 import { Link } from "react-router-dom";
+
+// Your existing component code...
+
+export default function Home() {
+  // State to store the signed-in user's email
+  const [userEmail, setUserEmail] = useState(null);
+
+  useEffect(() => {
+    // Add listener for authentication state changes
+    const unsubscribe = auth.onAuthStateChanged(user => {
+      if (user) {
+        // User is signed in
+        setUserEmail(user.email); // Set the user's email
+      } else {
+        // User is signed out
+        setUserEmail(null); // Clear the user's email
+      }
+    });
+
+    // Cleanup function
+    return () => unsubscribe();
+  }, []);
+
 
 const Search = styled("div")(({ theme }) => ({
   position: "relative",
