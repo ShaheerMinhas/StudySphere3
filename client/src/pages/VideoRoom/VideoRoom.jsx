@@ -5,6 +5,7 @@ import peer from "../../service/peer";
 import { useSocket } from "../../context/SocketProvider";*/
 
 //import * as React from "react";
+
 import React, { useEffect, useCallback, useState } from "react";
 import ReactPlayer from "react-player";
 import { useNavigate } from "react-router-dom";
@@ -24,6 +25,7 @@ import { styled } from "@mui/material/styles";
 import InputBase from "@mui/material/InputBase";
 import Avatar from "@mui/material/Avatar";
 import voicec from "../../components/voicec.gif";
+import Stack from "@mui/material/Stack";
 
 const drawerWidth = 351;
 const email = "abc";
@@ -326,6 +328,12 @@ const RoomPage = () => {
     handleNegoNeedFinal,
   ]);
 
+  const url=window.location.href;
+  const sc2=url.charAt(url.length-1);
+  const sc1="Video Channel ";
+  const title3=sc1 + sc2;
+  const [isButtonHidden, setButtonHidden] = useState(false);
+
 
   return (
     <Box sx={{ display: "flex" }}>
@@ -347,7 +355,7 @@ const RoomPage = () => {
           }}
         >
           <div style={{ position: "relative" }}>
-            {selectedChannel && (
+            
               <Typography
                 variant="body1"
                 sx={{
@@ -358,9 +366,9 @@ const RoomPage = () => {
                   fontWeight: "bold",
                 }}
               >
-                {selectedChannel}
+                {title3}
               </Typography>
-            )}
+            
             <Avatar
               src={voicec}
               sx={{
@@ -445,8 +453,22 @@ const RoomPage = () => {
                 textAlign: "left",
               }}
               onClick={(event) => {
+                //console.log(text);
+                //console.log(title3);
+                if(text!=title3 && !remoteSocketId){
                 setSelectedChannel(text);
                 handleSubmitForm(event, index + 1);
+                }
+                else if(text==title3 && !remoteSocketId){
+                  window.location.reload();;
+                }
+                else if(text==title3 && remoteSocketId){
+                  //window.location.reload();;
+                }
+                else if(text!=title3 && remoteSocketId){
+                  window.location.reload();;
+                }
+                
               }}
             >
               {text}
@@ -456,32 +478,155 @@ const RoomPage = () => {
       </Drawer>
       
       <div>
-      <h1>Room Page</h1>
-      <h4>{remoteSocketId ? "Connected" : "No one in room"}</h4>
-      {myStream && <button onClick={sendStreams}>Send Stream</button>}
-      {remoteSocketId && <button onClick={handleCallUser}>CALL</button>}
+      <Toolbar/>
+      <Typography
+            variant="h3"
+            noWrap
+            component="div"
+            sx={{
+              color: "#13111b",
+              fontStyle: "italic",
+              fontWeight: "bold",
+              position: "absolute",
+              bottom: 0,
+              right: 0,
+              marginRight: "20px",
+              marginBottom: "20px",
+            }}
+          >
+            {remoteSocketId ? "CONNECTED" : "NO ONE HERE"}
+          </Typography>
+      {myStream && <Button
+              variant="contained"
+              color="primary"
+              sx={{
+                borderRadius: "14px",
+                backgroundColor: "#13111b",
+                borderColor: "#392b65",
+                borderWidth: "2px",
+                width: "10%",
+                height: "5%",
+                "&:hover": {
+                  border: 1,
+                  backgroundColor: "#13111b",
+                  borderColor: "#ea9022",
+                },
+                position: "absolute",
+                top: 690,
+                right: 14,
+                textAlign: "left",
+              }}
+              onClick={sendStreams}
+            >
+              SEND STREAM
+            </Button>}
+
+            {isButtonHidden && remoteSocketId && <Button
+              variant="contained"
+              color="primary"
+              sx={{
+                borderRadius: "14px",
+                backgroundColor: "#13111b",
+                borderColor: "#392b65",
+                borderWidth: "2px",
+                width: "10%",
+                height: "5%",
+                "&:hover": {
+                  border: 1,
+                  backgroundColor: "#D60C0C"
+                },
+                position: "absolute",
+                top: 750,
+                right: 14,
+                textAlign: "left",
+              }}
+              onClick={(event) => {window.location.reload();}}
+            >
+              LEAVE
+            </Button>}
+
+      {!isButtonHidden && remoteSocketId && <Button
+              variant="contained"
+              color="primary"
+              sx={{
+                borderRadius: "14px",
+                backgroundColor: "#13111b",
+                borderColor: "#392b65",
+                borderWidth: "2px",
+                width: "10%",
+                height: "14%",
+                "&:hover": {
+                  border: 1,
+                  backgroundColor: "#13111b",
+                  borderColor: "#ea9022",
+                  color: "#0ca877",
+                },
+                textAlign: "left",
+                position: "absolute",
+                top: 110, 
+                right: 14,
+              }}
+              onClick={(event) => {setButtonHidden(true); handleCallUser()}}
+            >
+              CALL
+            </Button>}
+
       {myStream && (
         <>
-          <h1>My Stream</h1>
+          <Typography
+            variant="h4"
+            noWrap
+            component="div"
+            sx={{
+              color: "#13111b",
+              fontStyle: "italic",
+              fontWeight: "bold",
+              position: "absolute",
+            }}
+            top={110}
+            left={400}
+          >
+            YOUR STREAM
+          </Typography>
+          <div style={{ position: "absolute", top: 72, left:400}}>
           <ReactPlayer
             playing
-            muted
-            height="100px"
-            width="200px"
+            muted={false}
+            height="400px"
+            width="259px"
             url={myStream}
           />
+          </div>
         </>
       )}
       {remoteStream && (
         <>
-          <h1>Remote Stream</h1>
+          <Typography
+            variant="h4"
+            noWrap
+            component="div"
+            sx={{
+              color: "#13111b",
+              fontStyle: "italic",
+              fontWeight: "bold",
+              position: "absolute",
+            }}
+            top={400}
+            left={400}
+          >
+            OTHER'S STREAM
+          </Typography>
+          <Stack direction="row" spacing={2} alignItems="stretch">
+          <div style={{ position: "absolute", top: 360, left:400}}>
           <ReactPlayer
             playing
-            muted
-            height="100px"
-            width="200px"
+            muted={false}
+            height="400px"
+            width="259px"
             url={remoteStream}
           />
+          </div>
+          </Stack>
         </>
       )}
     </div>

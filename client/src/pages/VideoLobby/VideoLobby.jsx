@@ -212,7 +212,7 @@ export default function VideoLobby() {
                   fontWeight: "bold",
                 }}
               >
-                {selectedChannel}
+                {}
               </Typography>
             )}
             <Avatar
