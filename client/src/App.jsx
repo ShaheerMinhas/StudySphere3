@@ -36,7 +36,8 @@ function App() {
   }, []);
 
   return (
-    <Router> {/* Wrap your routes with BrowserRouter */}
+    <div className="conttainer">
+<Router> {/* Wrap your routes with BrowserRouter */}
       <Routes>
         <Route exact path="/SignUp" element={<SignUp />} />
         <Route path="/" element={<SignIn />} />
@@ -46,6 +47,8 @@ function App() {
         <Route path="/room/:roomId" element={<RoomPage />} />
       </Routes>
     </Router>
+    </div>
+    
   );
 }
 
