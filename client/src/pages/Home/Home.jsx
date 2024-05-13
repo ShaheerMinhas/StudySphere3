@@ -82,7 +82,6 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
   },
 }));
 
-export default function Home() {
   const currentDay = new Date().toLocaleDateString("en-US", {
     day: "2-digit",
   });
